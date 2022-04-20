@@ -10,22 +10,41 @@
     <q-btn flat round dense icon="whatshot" />
   </q-toolbar>
   <div class="q-pa-md q-gutter-sm">
-    <q-input filled v-model="text" label="Filled" />
+    <q-input filled v-model="data.task" label="Task" @keyup.enter="add" />
     <q-list bordered separator>
-      <q-item clickable v-ripple>
+      <q-item v-for="(todo, i) in data.todos" :key="todo._id">
         <q-item-section avatar>
-          <q-icon name="signal_wifi_off" />
+          <q-checkbox v-model="todo.isDone" />
         </q-item-section>
-        <q-item-section>Active</q-item-section>
-        <q-item-section side>Side</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple>
-        <q-item-section avatar>
-          <q-icon name="signal_wifi_off" />
+        <q-item-section>{{ i }} - {{ todo.desc }}</q-item-section>
+        <q-item-section side>
+          <q-btn icon="delete" round @click="remove(i)" />
         </q-item-section>
-        <q-item-section>Active</q-item-section>
-        <q-item-section side>Side</q-item-section>
       </q-item>
     </q-list>
   </div>
 </template>
+
+<script setup>
+
+import { reactive } from 'vue'
+
+const data = reactive({
+  task: '',
+  todos: []
+})
+
+function add () {
+  data.todos.push({
+    _id: Date.now(),
+    desc: data.task,
+    isDone: false
+  })
+  data.task = ''
+}
+
+const remove = (index) => {
+  data.todos.splice(index, 1)
+}
+
+</script>
