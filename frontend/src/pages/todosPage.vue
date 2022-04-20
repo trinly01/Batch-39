@@ -1,10 +1,3 @@
-<style scoped>
-  .completed {
-    text-decoration: line-through;
-    color: grey;
-  }
-</style>
-
 <template>
   <q-toolbar class="bg-primary text-white">
     <q-btn flat round dense icon="menu" class="q-mr-sm" />
@@ -35,6 +28,7 @@
 <script setup>
 
 import { reactive } from 'vue'
+import('pages/style.css')
 
 const data = reactive({
   task: '',
@@ -50,8 +44,9 @@ function add () {
   data.task = ''
 }
 
-const remove = (index) => {
-  data.todos.splice(index, 1)
-}
+const remove = (index) => data.todos.splice(index, 1)
 
 </script>
+
+<style scoped>
+</style>
