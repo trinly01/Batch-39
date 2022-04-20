@@ -1,3 +1,10 @@
+<style scoped>
+  .completed {
+    text-decoration: line-through;
+    color: grey;
+  }
+</style>
+
 <template>
   <q-toolbar class="bg-primary text-white">
     <q-btn flat round dense icon="menu" class="q-mr-sm" />
@@ -12,7 +19,7 @@
   <div class="q-pa-md q-gutter-sm">
     <q-input filled v-model="data.task" label="Task" @keyup.enter="add" />
     <q-list bordered separator>
-      <q-item v-for="(todo, i) in data.todos" :key="todo._id">
+      <q-item v-for="(todo, i) in data.todos" :key="todo._id" :class="{ completed: todo.isDone }">
         <q-item-section avatar>
           <q-checkbox v-model="todo.isDone" />
         </q-item-section>
