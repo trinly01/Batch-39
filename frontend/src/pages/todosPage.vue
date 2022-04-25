@@ -28,13 +28,14 @@
         </q-item-section>
       </q-item>
     </q-list>
+    <pie-chart :donut="true" :data="[['Completed', completed], ['Active', active]]"></pie-chart>
   </div>
 </template>
 
 <script setup>
 import tProfile from 'components/tProfile.vue'
 
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { Dialog } from 'quasar'
 import('pages/style.css')
 const changeInput = ref(null)
@@ -45,6 +46,9 @@ const data = reactive({
 })
 
 // const log = console.log
+
+const completed = computed(() => data.todos.filter(t => t.isDone).length)
+const active = computed(() => data.todos.length - completed.value)
 
 function chat (name) {
   Dialog.create({
