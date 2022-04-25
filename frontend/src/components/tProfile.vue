@@ -10,7 +10,7 @@
       <div>{{ place }}</div>
     </div>
     <div>
-      <q-btn icon="chat" round />
+      <q-btn icon="chat" round @click="emit('chatClick', name)" />
     </div>
   </div>
 </template>
@@ -31,5 +31,7 @@ defineProps({
     default: 'No place'
   }
 })
+
+const emit = defineEmits(['chatClick'])
 
 </script>

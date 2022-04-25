@@ -10,7 +10,9 @@
     <q-btn flat round dense icon="whatshot" />
   </q-toolbar>
   <div class="q-pa-md q-gutter-sm">
-    <t-profile name="kristian" place="Cubao, QC, PH" />
+    <t-profile name="kristian" place="Cubao, QC, PH" @chatClick="chat" />
+    <t-profile img="https://i.pravatar.cc/" name="Riz" place="Cainta Rizal, PH" @chatClick="chat" />
+    <t-profile img="https://i.pravatar.cc/" name="Lex" place="Silang Cavite" @chatClick="chat" />
     <q-input filled v-model="data.task" label="Task" @keyup.enter="add" /> <q-btn @click="clear">clear</q-btn>
     <q-list bordered separator>
       <q-item v-for="(todo, i) in data.todos" :key="todo._id" :class="{ completed: todo.isDone }">
@@ -33,6 +35,7 @@
 import tProfile from 'components/tProfile.vue'
 
 import { reactive, ref } from 'vue'
+import { Dialog } from 'quasar'
 import('pages/style.css')
 const changeInput = ref(null)
 
@@ -42,6 +45,13 @@ const data = reactive({
 })
 
 // const log = console.log
+
+function chat (name) {
+  Dialog.create({
+    title: 'Chat',
+    message: 'Hello ' + name
+  })
+}
 
 function add () {
   data.todos.push({
