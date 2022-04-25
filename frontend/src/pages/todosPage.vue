@@ -10,6 +10,7 @@
     <q-btn flat round dense icon="whatshot" />
   </q-toolbar>
   <div class="q-pa-md q-gutter-sm">
+    <t-profile name="kristian" place="Cubao, QC, PH" />
     <q-input filled v-model="data.task" label="Task" @keyup.enter="add" /> <q-btn @click="clear">clear</q-btn>
     <q-list bordered separator>
       <q-item v-for="(todo, i) in data.todos" :key="todo._id" :class="{ completed: todo.isDone }">
@@ -29,6 +30,7 @@
 </template>
 
 <script setup>
+import tProfile from 'components/tProfile.vue'
 
 import { reactive, ref } from 'vue'
 import('pages/style.css')
@@ -63,6 +65,7 @@ function edit (i) {
 
 function clear () {
   // clear all todos with isDone value of true
+  // data.todos = []
   data.todos = data.todos.filter(t => !t.isDone)
   // data.todos = data.todos.filter(function (t) {
   //   return t.isDone === true
