@@ -15,5 +15,23 @@ module.exports = function (app) {
   // Get our initialized service so that we can register hooks
   const service = app.service('todos');
 
+  service.publish('created', () => {
+    return [
+      app.channel('anonymous')
+    ];
+  });
+
+  service.publish('patched', () => {
+    return [
+      app.channel('anonymous')
+    ];
+  });
+
+  service.publish(() => {
+    return [
+      app.channel('anonymous')
+    ];
+  });
+
   service.hooks(hooks);
 };

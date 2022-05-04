@@ -97,13 +97,13 @@ async function add () {
   //   changing: -1,
   //   change: ''
   // })
-  const result = (await $api.post('/todos', {
+  (await $api.post('/todos', {
     task: data.task,
     isDone: false
   }))
-  console.log('result', result.data)
-  const todo = result.data
-  data.todos.push({ ...todo, desc: todo.task })
+  // console.log('result', result.data)
+  // const todo = result.data
+  // data.todos.push({ ...todo, desc: todo.task })
   data.task = ''
 }
 
