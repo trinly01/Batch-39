@@ -40,11 +40,18 @@ import { Dialog } from 'quasar'
 
 import('pages/style.css')
 const changeInput = ref(null)
-const { appContext: { config: { globalProperties: { $api } } } } = getCurrentInstance()
+const { appContext: { config: { globalProperties: { $api, $todosSrvc } } } } = getCurrentInstance()
 
 onMounted(async () => {
-  const { data: { data: todos } } = (await $api.get('/todos'))
-  data.todos = todos.map(todo => ({ ...todo, desc: todo.task }))
+  // const { data: { data: todos } } = (await $api.get('/todos'))
+  // data.todos = todos.map(todo => ({ ...todo, desc: todo.task }))
+
+  $todosSrvc.on('dataChange', (messages) => {
+    console.log(messages)
+    data.todos = messages.map(todo => ({ ...todo, desc: todo.task }))
+  })
+  $todosSrvc.init()
+
   console.log(data.todos)
 })
 
