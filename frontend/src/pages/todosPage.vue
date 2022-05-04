@@ -10,9 +10,6 @@
     <q-btn flat round dense icon="whatshot" />
   </q-toolbar>
   <div class="q-pa-md q-gutter-sm">
-    <t-profile name="kristian" place="Cubao, QC, PH" @chatClick="chat" />
-    <t-profile img="https://i.pravatar.cc/" name="Riz" place="Cainta Rizal, PH" @chatClick="chat" />
-    <t-profile img="https://i.pravatar.cc/" name="Lex" place="Silang Cavite" @chatClick="chat" />
     <q-input filled v-model="data.task" label="Task" @keyup.enter="add" /> <q-btn @click="clear">clear</q-btn>
     <q-list bordered separator>
       <q-item v-for="(todo, i) in data.todos" :key="todo._id" :class="{ completed: todo.isDone }">
@@ -20,7 +17,7 @@
           <q-checkbox :modelValue="todo.isDone" @click="update(todo)" />
         </q-item-section>
         <q-item-section v-show="data.changing === i">
-          <q-input ref="changeInput" filled v-model="data.change" @blur="data.changing = -1" @keyup.esc="data.changing = -1" @keyup.enter="todo.desc = data.change, data.change = '', data.changing = -1" />
+          <q-input ref="changeInput" filled v-model="data.change" @blur="data.changing = -1" @keyup.esc="data.changing = -1" @keyup.enter="updateDescription(todo)" />
         </q-item-section>
         <q-item-section v-show="data.changing !== i" @dblclick="edit(i)">{{ todo.desc }}</q-item-section>
         <q-item-section side>
@@ -29,6 +26,9 @@
       </q-item>
     </q-list>
     <pie-chart :donut="true" :data="[['Completed', completed], ['Active', active]]"></pie-chart>
+    <t-profile name="kristian" place="Cubao, QC, PH" @chatClick="chat" />
+    <t-profile img="https://i.pravatar.cc/" name="Riz" place="Cainta Rizal, PH" @chatClick="chat" />
+    <t-profile img="https://i.pravatar.cc/" name="Lex" place="Silang Cavite" @chatClick="chat" />
   </div>
 </template>
 
@@ -63,6 +63,16 @@ async function update (todo) {
     isDone: !todo.isDone
   })
   todo.isDone = !todo.isDone
+}
+
+async function updateDescription (todo) {
+  const result = await $api.patch('/todos/' + todo._id, {
+    task: data.change
+  })
+  console.log(result)
+  todo.desc = data.change
+  data.change = ''
+  data.changing = -1
 }
 
 function chat (name) {
