@@ -7,7 +7,8 @@
 
     <q-toolbar-title>Todos {{ data.task }}</q-toolbar-title>
 
-    <q-btn flat round dense icon="whatshot" />
+    <q-btn v-if="data.user" flat round dense icon="person" @click="$wings.logout()" />
+    <q-btn v-else flat round dense icon="login" @click="login" />
   </q-toolbar>
   <div class="q-pa-md q-gutter-sm">
     <q-input filled v-model="data.task" label="Task" @keyup.enter="add" /> <q-btn @click="clear">clear</q-btn>
@@ -40,11 +41,31 @@ import { Dialog } from 'quasar'
 
 import('pages/style.css')
 const changeInput = ref(null)
-const { appContext: { config: { globalProperties: { $api, $todosSrvc } } } } = getCurrentInstance()
+// const { appContext: { config: { globalProperties: { $api, $todosSrvc, $wings } } } } = getCurrentInstance()
+const { $api, $todosSrvc, $wings } = getCurrentInstance().appContext.config.globalProperties
 
 onMounted(async () => {
   // const { data: { data: todos } } = (await $api.get('/todos'))
   // data.todos = todos.map(todo => ({ ...todo, desc: todo.task }))
+
+  $wings.authenticate()
+
+  $wings.on('login', (result) => {
+    console.log(result)
+    data.user = result.user
+    $todosSrvc.reset()
+    $todosSrvc.init()
+
+    console.log($api)
+
+    $api.defaults.headers.common.Authorization = 'Bearer ' + window.localStorage.getItem('http://localhost:3030-jwt')
+  })
+
+  $wings.on('logout', () => {
+    data.user = null
+    data.todos = []
+    delete $api.defaults.headers.common.Authorization
+  })
 
   $todosSrvc.on('dataChange', (messages) => {
     console.log(messages)
@@ -56,6 +77,7 @@ onMounted(async () => {
 })
 
 const data = reactive({
+  user: null,
   task: '',
   todos: []
 })
@@ -66,17 +88,23 @@ const completed = computed(() => data.todos.filter(t => t.isDone).length)
 const active = computed(() => data.todos.length - completed.value)
 
 async function update (todo) {
-  await $api.patch('/todos/' + todo._id, {
+  // await $api.patch('/todos/' + todo._id, {
+  //   isDone: !todo.isDone
+  // })
+  await $todosSrvc.patch(todo._id, {
     isDone: !todo.isDone
   })
   todo.isDone = !todo.isDone
 }
 
 async function updateDescription (todo) {
-  const result = await $api.patch('/todos/' + todo._id, {
+  // const result = await $api.patch('/todos/' + todo._id, {
+  //   task: data.change
+  // })
+  await $todosSrvc.patch(todo._id, {
     task: data.change
   })
-  console.log(result)
+  // console.log(result)
   todo.desc = data.change
   data.change = ''
   data.changing = -1
@@ -97,10 +125,14 @@ async function add () {
   //   changing: -1,
   //   change: ''
   // })
-  (await $api.post('/todos', {
+  // (await $api.post('/todos', {
+  //   task: data.task,
+  //   isDone: false
+  // }))
+  await $todosSrvc.create({
     task: data.task,
     isDone: false
-  }))
+  })
   // console.log('result', result.data)
   // const todo = result.data
   // data.todos.push({ ...todo, desc: todo.task })
@@ -126,8 +158,16 @@ function clear () {
 }
 
 const remove = (index, _id) => {
-  $api.delete('/todos/' + _id)
+  $api.delete('/gawain/' + _id)
   data.todos.splice(index, 1)
+}
+
+const login = async () => {
+  await $wings.authenticate({
+    email: 'pogi@pogi.com',
+    password: 'pogi@pogi.com',
+    strategy: 'local'
+  })
 }
 
 </script>
